@@ -18,7 +18,6 @@ package com.google.cardboard.sdk.qrcode;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.google.cardboard.sdk.R;
 
 /**
@@ -50,7 +49,7 @@ public class QrCodeContentProcessor {
    *     Application. It is used to write device params to scoped storage via {@code
    *     Context.getFilesDir()}.
    */
-  public void processAndSaveQrCode(Barcode qrCode, Context context) {
+  public void processAndSaveQrCode(String qrCode, Context context) {
     new ProcessAndSaveQrCodeTask(context).execute(qrCode);
   }
 
@@ -59,7 +58,7 @@ public class QrCodeContentProcessor {
    * external storage.
    */
   public class ProcessAndSaveQrCodeTask
-      extends AsyncTask<Barcode, CardboardParamsUtils.UriToParamsStatus> {
+      extends AsyncTask<String, CardboardParamsUtils.UriToParamsStatus> {
     private final Context context;
 
     /**
@@ -74,7 +73,7 @@ public class QrCodeContentProcessor {
     }
 
     @Override
-    protected CardboardParamsUtils.UriToParamsStatus doInBackground(Barcode qrCode) {
+    protected CardboardParamsUtils.UriToParamsStatus doInBackground(String qrCode) {
       UrlFactory urlFactory = new UrlFactory();
       return getParamsFromQrCode(qrCode, urlFactory);
     }
@@ -109,13 +108,7 @@ public class QrCodeContentProcessor {
    * @return Cardboard device parameters, or null if there is an error.
    */
   private static CardboardParamsUtils.UriToParamsStatus getParamsFromQrCode(
-      Barcode barcode, UrlFactory urlFactory) {
-    if (barcode.valueFormat != Barcode.TEXT && barcode.valueFormat != Barcode.URL) {
-      Log.e(TAG, "Invalid QR code format: " + barcode.valueFormat);
-      return CardboardParamsUtils.UriToParamsStatus.error(
-          CardboardParamsUtils.UriToParamsStatus.STATUS_UNEXPECTED_FORMAT);
-    }
-
-    return CardboardParamsUtils.getParamsFromUriString(barcode.rawValue, urlFactory);
+      String barcode, UrlFactory urlFactory) {
+    return CardboardParamsUtils.getParamsFromUriString(barcode, urlFactory);
   }
 }

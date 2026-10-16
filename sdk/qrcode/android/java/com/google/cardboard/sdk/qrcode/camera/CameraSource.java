@@ -18,15 +18,13 @@ package com.google.cardboard.sdk.qrcode.camera;
 import android.Manifest;
 import android.content.Context;
 import android.graphics.ImageFormat;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
 import androidx.annotation.RequiresPermission;
-import com.google.android.gms.common.images.Size;
-import com.google.android.gms.vision.Detector;
-import com.google.android.gms.vision.Frame;
+import android.util.Size;
+import com.google.cardboard.sdk.qrcode.QrCodeDecoder;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -67,7 +65,6 @@ public class CameraSource {
   // Guarded by cameraLock
   private android.hardware.Camera camera;
 
-  private int rotation;
 
   private Size previewSize;
 
@@ -94,7 +91,7 @@ public class CameraSource {
    * @param detector Expects a QR code detector.
    * @throws IllegalArgumentException When any of the parameter preconditions is unmet.
    */
-  public CameraSource(Context context, Detector<?> detector) {
+  public CameraSource(Context context, QrCodeDecoder detector) {
     // Prerequisite evaluation.
     if (context == null) {
       Log.e(TAG, "context is null.");
@@ -260,7 +257,8 @@ public class CameraSource {
         return i;
       }
     }
-    return -1;
+    // External cameras and some tablets have no rear-facing camera.
+    return android.hardware.Camera.getNumberOfCameras() > 0 ? 0 : -1;
   }
 
   /**
@@ -430,8 +428,6 @@ public class CameraSource {
       displayAngle = angle;
     }
 
-    // This corresponds to the rotation constants in frame.
-    this.rotation = angle / 90;
 
     camera.setDisplayOrientation(displayAngle);
     parameters.setRotation(angle);
@@ -473,19 +469,16 @@ public class CameraSource {
    * available from the camera. This is designed to run detection on frames as fast as possible.
    */
   private class FrameProcessingRunnable implements Runnable {
-    private Detector<?> detector;
-    private final long startTimeMillis = SystemClock.elapsedRealtime();
+    private QrCodeDecoder detector;
 
     // This lock guards all of the member variables below.
     private final Object lock = new Object();
     private boolean active = true;
 
     // These pending variables hold the state associated with the new frame awaiting processing.
-    private long pendingTimeMillis;
-    private int pendingFrameId = 0;
     private ByteBuffer pendingFrameData;
 
-    FrameProcessingRunnable(Detector<?> detector) {
+    FrameProcessingRunnable(QrCodeDecoder detector) {
       this.detector = detector;
     }
 
@@ -494,8 +487,10 @@ public class CameraSource {
      * completed, which is managed in camera source's release method above.
      */
     void release() {
-      detector.release();
-      detector = null;
+      if (detector != null) {
+        detector.release();
+        detector = null;
+      }
     }
 
     /** Marks the runnable as active/not active. Signals any blocked threads to continue. */
@@ -526,9 +521,6 @@ public class CameraSource {
           return;
         }
 
-        // Timestamp and frame ID are saved to aware when frames are dropped along the way.
-        pendingTimeMillis = SystemClock.elapsedRealtime() - startTimeMillis;
-        pendingFrameId++;
         pendingFrameData = bytesToByteBuffer.get(data);
 
         // Notify the processor thread if it is waiting on the next frame.
@@ -544,7 +536,6 @@ public class CameraSource {
      */
     @Override
     public void run() {
-      Frame outputFrame;
       ByteBuffer data;
 
       while (true) {
@@ -565,18 +556,6 @@ public class CameraSource {
             return;
           }
 
-          outputFrame =
-              new Frame.Builder()
-                  .setImageData(
-                      pendingFrameData,
-                      previewSize.getWidth(),
-                      previewSize.getHeight(),
-                      ImageFormat.NV21)
-                  .setId(pendingFrameId)
-                  .setTimestampMillis(pendingTimeMillis)
-                  .setRotation(rotation)
-                  .build();
-
           // Hold onto the frame data locally, so that we can use this for detection
           // below.  We need to clear pendingFrameData to ensure that this buffer isn't
           // recycled back to the camera before we are done using that data.
@@ -588,7 +567,7 @@ public class CameraSource {
         // the camera to add pending frame(s) while we are running detection on the current
         // frame.
         try {
-          detector.receiveFrame(outputFrame);
+          detector.receiveFrame(data.array(), previewSize.getWidth(), previewSize.getHeight());
         } catch (Throwable t) {
           Log.e(TAG, "Exception thrown from receiver.", t);
         } finally {

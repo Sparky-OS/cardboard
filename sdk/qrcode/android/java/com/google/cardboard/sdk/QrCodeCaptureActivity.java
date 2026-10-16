@@ -16,7 +16,6 @@
 package com.google.cardboard.sdk;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,25 +26,16 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.vision.MultiProcessor;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.cardboard.sdk.qrcode.CardboardParamsUtils;
 import com.google.cardboard.sdk.qrcode.QrCodeContentProcessor;
-import com.google.cardboard.sdk.qrcode.QrCodeTracker;
-import com.google.cardboard.sdk.qrcode.QrCodeTrackerFactory;
+import com.google.cardboard.sdk.qrcode.QrCodeDecoder;
 import com.google.cardboard.sdk.qrcode.camera.CameraSource;
 import com.google.cardboard.sdk.qrcode.camera.CameraSourcePreview;
 import java.io.IOException;
@@ -55,23 +45,18 @@ import java.io.IOException;
  * QR code.
  */
 public class QrCodeCaptureActivity extends AppCompatActivity
-    implements QrCodeTracker.Listener, QrCodeContentProcessor.Listener {
+    implements QrCodeDecoder.Listener, QrCodeContentProcessor.Listener {
   private static final String TAG = QrCodeCaptureActivity.class.getSimpleName();
-
-  // Intent request code to handle updating play services if needed.
-  private static final int RC_HANDLE_GMS = 9001;
 
   // Permission request codes
   private static final int PERMISSIONS_REQUEST_CODE = 2;
-
-  // Min sdk version required for google play services.
-  private static final int MIN_SDK_VERSION = 23;
 
   private CameraSource cameraSource;
   private CameraSourcePreview cameraSourcePreview;
 
   // Flag used to avoid saving the device parameters more than once.
-  private static boolean qrCodeSaved = false;
+  private boolean qrCodeSaved = false;
+  private boolean resumed = false;
 
   /** Initializes the UI and creates the detector pipeline. */
   @Override
@@ -129,6 +114,17 @@ public class QrCodeCaptureActivity extends AppCompatActivity
   public void onRequestPermissionsResult(
       int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    if (requestCode != PERMISSIONS_REQUEST_CODE) {
+      return;
+    }
+    if (isCameraEnabled()
+        && (VERSION.SDK_INT >= VERSION_CODES.Q || isWriteExternalStoragePermissionsEnabled())) {
+      if (resumed && cameraSource == null) {
+        createCameraSource();
+        startCameraSource();
+      }
+      return;
+    }
     if (VERSION.SDK_INT < VERSION_CODES.Q) {
       if (!(isCameraEnabled() && isWriteExternalStoragePermissionsEnabled())) {
         Log.i(TAG, getString(R.string.no_permissions));
@@ -168,32 +164,14 @@ public class QrCodeCaptureActivity extends AppCompatActivity
 
   /** Creates and starts the camera. */
   private void createCameraSource() {
-    Context context = getApplicationContext();
-
-    BarcodeDetector qrCodeDetector =
-        new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.QR_CODE).build();
-
-    QrCodeTrackerFactory qrCodeFactory = new QrCodeTrackerFactory(this);
-
-    qrCodeDetector.setProcessor(new MultiProcessor.Builder<>(qrCodeFactory).build());
-
-    // Check that native dependencies are downloaded.
-    if (!qrCodeDetector.isOperational()) {
-      Toast.makeText(this, R.string.missing_dependencies, Toast.LENGTH_LONG).show();
-      Log.w(
-          TAG,
-          "QR Code detector is not operational. Try connecting to WiFi and updating Google Play"
-              + " Services or checking that the device storage isn't low.");
-    }
-
-    // Creates and starts the camera.
-    cameraSource = new CameraSource(getApplicationContext(), qrCodeDetector);
+    cameraSource = new CameraSource(getApplicationContext(), new QrCodeDecoder(this));
   }
 
   /** Restarts the camera. */
   @Override
   protected void onResume() {
     super.onResume();
+    resumed = true;
     // Checks for CAMERA permission and WRITE_EXTERNAL_STORAGE permission when running on Android P
     // or below. If needed permissions are not granted, requests them.
     if (!(isCameraEnabled()
@@ -210,25 +188,17 @@ public class QrCodeCaptureActivity extends AppCompatActivity
   /** Stops the camera. */
   @Override
   protected void onPause() {
+    resumed = false;
     super.onPause();
     if (cameraSourcePreview != null) {
       cameraSourcePreview.stop();
       cameraSourcePreview.release();
+      cameraSource = null;
     }
   }
 
   /** Starts or restarts the camera source, if it exists. */
   private void startCameraSource() {
-    // Check that the device has play services available.
-    int code =
-        GoogleApiAvailability.getInstance()
-            .isGooglePlayServicesAvailable(getApplicationContext(), MIN_SDK_VERSION);
-    if (code != ConnectionResult.SUCCESS) {
-      Log.i(TAG, "isGooglePlayServicesAvailable() returned: " + new ConnectionResult(code));
-      Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
-      dlg.show();
-    }
-
     if (cameraSource != null) {
       try {
         cameraSourcePreview.start(cameraSource);
@@ -262,12 +232,13 @@ public class QrCodeCaptureActivity extends AppCompatActivity
    * @param qrCode Detected QR code.
    */
   @Override
-  public void onQrCodeDetected(Barcode qrCode) {
-    if (qrCode != null && !qrCodeSaved) {
-      qrCodeSaved = true;
-      QrCodeContentProcessor qrCodeContentProcessor = new QrCodeContentProcessor(this);
-      qrCodeContentProcessor.processAndSaveQrCode(qrCode, this);
-    }
+  public void onQrCodeDetected(String qrCode) {
+    runOnUiThread(() -> {
+      if (resumed && !isFinishing() && !qrCodeSaved) {
+        qrCodeSaved = true;
+        new QrCodeContentProcessor(this).processAndSaveQrCode(qrCode, this);
+      }
+    });
   }
 
   /**
