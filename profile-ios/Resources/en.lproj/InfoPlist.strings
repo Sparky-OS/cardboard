@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Cardboard";
+"CFBundleName" = "Cardboard";
+"NSCameraUsageDescription" = "Read the QR code on your viewer to get its lens profile.";

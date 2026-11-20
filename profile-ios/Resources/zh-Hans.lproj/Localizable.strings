@@ -1,0 +1,15 @@
+"intro" = "扫描眼镜上的二维码，再将配置发送到 Flat Headset。";
+"scan" = "扫描眼镜二维码";
+"use" = "在 Flat Headset 中使用";
+"resolve" = "解析眼镜链接";
+"cancel" = "取消";
+"permission_wait" = "正在等待相机权限。";
+"permission_denied" = "相机访问已关闭。请在设置中允许访问以扫描眼镜。";
+"camera_failed" = "相机不可用或已中断。请轻点扫描以重试。";
+"aim" = "请将相机对准眼镜上的二维码。";
+"ready" = "眼镜配置已就绪。";
+"network_note" = "此二维码是短链接。解析需要通过互联网连接其提供商。";
+"resolving" = "正在解析眼镜链接…";
+"invalid" = "这不是受支持的眼镜配置。请扫描含完整 Cardboard 配置的二维码。";
+"resolve_failed" = "无法解析链接。请检查网络或扫描完整配置的二维码。";
+"receiver_missing" = "无法打开 Flat Headset。请安装它或关闭其中打开的对话框，然后重试。";

@@ -1,0 +1,15 @@
+"intro" = "掃描眼鏡上的 QR 碼，再將設定傳送到 Flat Headset。";
+"scan" = "掃描眼鏡 QR 碼";
+"use" = "在 Flat Headset 中使用";
+"resolve" = "解析眼鏡連結";
+"cancel" = "取消";
+"permission_wait" = "正在等候相機權限。";
+"permission_denied" = "相機存取已關閉。請在設定中允許存取以掃描眼鏡。";
+"camera_failed" = "相機無法使用或已中斷。請點一下掃描以重試。";
+"aim" = "請將相機對準眼鏡上的 QR 碼。";
+"ready" = "眼鏡設定已就緒。";
+"network_note" = "此 QR 碼是短連結。解析需要透過網際網路連接其提供者。";
+"resolving" = "正在解析眼鏡連結…";
+"invalid" = "這不是支援的眼鏡設定。請掃描包含完整 Cardboard 設定的 QR 碼。";
+"resolve_failed" = "無法解析連結。請檢查網路或掃描完整設定的 QR 碼。";
+"receiver_missing" = "無法開啟 Flat Headset。請安裝它或關閉其中開啟的對話框，然後重試。";

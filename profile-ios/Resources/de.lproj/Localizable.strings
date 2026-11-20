@@ -1,0 +1,15 @@
+"intro" = "Scanne den QR-Code am Viewer und sende sein Profil an Flat Headset.";
+"scan" = "Viewer-QR-Code scannen";
+"use" = "In Flat Headset verwenden";
+"resolve" = "Viewer-Link auflösen";
+"cancel" = "Abbrechen";
+"permission_wait" = "Warte auf die Kameraerlaubnis.";
+"permission_denied" = "Der Kamerazugriff ist deaktiviert. Erlaube ihn in den Einstellungen, um den Viewer zu scannen.";
+"camera_failed" = "Die Kamera ist nicht verfügbar oder wurde unterbrochen. Tippe zum erneuten Versuch auf Scannen.";
+"aim" = "Richte die Kamera auf den QR-Code am Viewer.";
+"ready" = "Viewer-Profil bereit.";
+"network_note" = "Dieser QR-Code ist ein Kurzlink. Zum Auflösen ist eine Internetverbindung zu seinem Anbieter erforderlich.";
+"resolving" = "Viewer-Link wird aufgelöst…";
+"invalid" = "Dieses Viewer-Profil wird nicht unterstützt. Scanne einen QR-Code mit einem vollständigen Cardboard-Profil.";
+"resolve_failed" = "Der Link konnte nicht aufgelöst werden. Prüfe die Verbindung oder scanne einen vollständigen Profilcode.";
+"receiver_missing" = "Flat Headset konnte nicht geöffnet werden. Installiere es oder schließe seinen offenen Dialog und versuche es erneut.";

@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Cardboard";
+"CFBundleName" = "Cardboard";
+"NSCameraUsageDescription" = "讀取眼鏡上的 QR 碼以取得鏡片設定。";

@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Cardboard";
+"CFBundleName" = "Cardboard";
+"NSCameraUsageDescription" = "Odczyt kodu QR gogli w celu uzyskania profilu soczewek.";

@@ -1,0 +1,15 @@
+"intro" = "Escanea el código QR del visor y envía su perfil a Flat Headset.";
+"scan" = "Escanear código QR del visor";
+"use" = "Usar en Flat Headset";
+"resolve" = "Resolver enlace del visor";
+"cancel" = "Cancelar";
+"permission_wait" = "Esperando permiso para la cámara.";
+"permission_denied" = "El acceso a la cámara está desactivado. Permítelo en Ajustes para escanear el visor.";
+"camera_failed" = "La cámara no está disponible o se ha interrumpido. Pulsa Escanear para reintentar.";
+"aim" = "Apunta la cámara al código QR del visor.";
+"ready" = "Perfil del visor listo.";
+"network_note" = "Este código QR es un enlace acortado. Resolverlo requiere conexión a internet con su proveedor.";
+"resolving" = "Resolviendo el enlace del visor…";
+"invalid" = "Este perfil de visor no es compatible. Escanea un código QR con el perfil Cardboard completo.";
+"resolve_failed" = "No se pudo resolver el enlace. Comprueba la conexión o escanea un código de perfil completo.";
+"receiver_missing" = "No se pudo abrir Flat Headset. Instálalo o cierra su diálogo abierto e inténtalo de nuevo.";

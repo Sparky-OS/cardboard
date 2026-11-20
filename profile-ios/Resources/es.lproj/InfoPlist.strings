@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Cardboard";
+"CFBundleName" = "Cardboard";
+"NSCameraUsageDescription" = "Leer el código QR del visor para obtener su perfil de lentes.";

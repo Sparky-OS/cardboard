@@ -1,0 +1,36 @@
+{
+  "languages": [
+    "en",
+    "pt-BR",
+    "es",
+    "fr",
+    "de",
+    "pl",
+    "ja",
+    "ko",
+    "zh-Hans",
+    "zh-Hant"
+  ],
+  "Localizable.strings": [
+    "intro",
+    "scan",
+    "use",
+    "resolve",
+    "cancel",
+    "permission_wait",
+    "permission_denied",
+    "camera_failed",
+    "aim",
+    "ready",
+    "network_note",
+    "resolving",
+    "invalid",
+    "resolve_failed",
+    "receiver_missing"
+  ],
+  "InfoPlist.strings": [
+    "CFBundleDisplayName",
+    "CFBundleName",
+    "NSCameraUsageDescription"
+  ]
+}

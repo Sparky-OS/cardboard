@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Cardboard";
+"CFBundleName" = "Cardboard";
+"NSCameraUsageDescription" = "ビューアーのQRコードを読み取り、レンズのプロファイルを取得します。";

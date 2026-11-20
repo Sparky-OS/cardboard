@@ -1,0 +1,15 @@
+"intro" = "Scannez le code QR du casque, puis envoyez son profil à Flat Headset.";
+"scan" = "Scanner le code QR du casque";
+"use" = "Utiliser dans Flat Headset";
+"resolve" = "Résoudre le lien du casque";
+"cancel" = "Annuler";
+"permission_wait" = "En attente de l’autorisation de la caméra.";
+"permission_denied" = "L’accès à la caméra est désactivé. Autorisez-le dans Réglages pour scanner votre casque.";
+"camera_failed" = "La caméra est indisponible ou a été interrompue. Touchez Scanner pour réessayer.";
+"aim" = "Dirigez la caméra vers le code QR du casque.";
+"ready" = "Profil du casque prêt.";
+"network_note" = "Ce code QR est un lien raccourci. Sa résolution nécessite une connexion internet à son fournisseur.";
+"resolving" = "Résolution du lien du casque…";
+"invalid" = "Ce profil de casque n’est pas pris en charge. Scannez un code QR contenant le profil Cardboard complet.";
+"resolve_failed" = "Impossible de résoudre le lien. Vérifiez la connexion ou scannez un code de profil complet.";
+"receiver_missing" = "Impossible d’ouvrir Flat Headset. Installez-le ou fermez sa boîte de dialogue, puis réessayez.";

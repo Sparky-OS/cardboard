@@ -1,0 +1,15 @@
+"intro" = "Zeskanuj kod QR gogli i wyślij ich profil do Flat Headset.";
+"scan" = "Skanuj kod QR gogli";
+"use" = "Użyj we Flat Headset";
+"resolve" = "Rozwiń odnośnik gogli";
+"cancel" = "Anuluj";
+"permission_wait" = "Oczekiwanie na dostęp do aparatu.";
+"permission_denied" = "Dostęp do aparatu jest wyłączony. Zezwól na niego w Ustawieniach, aby zeskanować gogle.";
+"camera_failed" = "Aparat jest niedostępny lub przerwano jego działanie. Stuknij Skanuj, aby spróbować ponownie.";
+"aim" = "Skieruj aparat na kod QR gogli.";
+"ready" = "Profil gogli jest gotowy.";
+"network_note" = "Ten kod QR zawiera skrócony odnośnik. Rozwinięcie wymaga połączenia internetowego z jego dostawcą.";
+"resolving" = "Rozwijanie odnośnika gogli…";
+"invalid" = "Ten profil gogli nie jest obsługiwany. Zeskanuj kod QR z pełnym profilem Cardboard.";
+"resolve_failed" = "Nie udało się rozwinąć odnośnika. Sprawdź połączenie lub zeskanuj kod pełnego profilu.";
+"receiver_missing" = "Nie udało się otworzyć Flat Headset. Zainstaluj go lub zamknij jego otwarte okno dialogowe i spróbuj ponownie.";
